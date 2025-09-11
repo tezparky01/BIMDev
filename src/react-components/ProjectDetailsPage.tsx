@@ -4,6 +4,7 @@ import { ProjectsManager } from "../classes/ProjectsManager";
 import { ThreeViewer } from "./ThreeViewer";
 import { deleteDocument } from "../firebase";
 import * as BUI from "@thatopen/ui"
+import * as TEMPLATES from "../ui-templates"
 
 interface Props {
   projectsManager: ProjectsManager
@@ -36,7 +37,7 @@ export function ProjectDetailsPage(props: Props) {
         initialState: {}
       },
       componentsGrid: {
-        template: (_) => BUI.html`<div></div>`,
+        template: TEMPLATES.componentsGridTemplate,
         initialState: {}
       }
     };
