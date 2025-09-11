@@ -280,3 +280,7 @@ input:focus, textarea:focus, select:focus {
 .todo-item:hover {
   background-color: var(--primary);
 }
+
+.project-card bim-label {
+  white-space: normal;
+}

@@ -5,6 +5,17 @@ import { Sidebar } from "./react-components/Sidebar"
 import { ProjectsPage } from "./react-components/ProjectsPage"
 import { ProjectDetailsPage } from "./react-components/ProjectDetailsPage"
 import { ProjectsManager } from "./classes/ProjectsManager"
+import * as BUI from "@thatopen/ui"
+
+BUI.Manager.init()
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "bim-label": any;
+    }
+  }
+}
 
 const projectsManager = new ProjectsManager()
 

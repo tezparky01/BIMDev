@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Project } from "../classes/Project";
+import { appIcons } from "../globals";
 
 interface Props {
   project: Project;
@@ -20,13 +21,13 @@ export function ProjectCard(props: Props) {
           HC
         </p>
         <div>
-          <h5>{ props.project.name }</h5>
-          <p>{ props.project.description }</p>
+          <bim-label style={{color: "white", fontSize: "1.2rem"}}>{ props.project.name }</bim-label>
+          <bim-label>{ props.project.description }</bim-label>
         </div>
       </div>
       <div className="card-content">
         <div className="card-property">
-          <p style={{ color: "#969696" }}>Status</p>
+          <bim-label icon={appIcons.STATUS} style={{ color: "#969696" }}>Status</bim-label>
           <p>{ props.project.status }</p>
         </div>
         <div className="card-property">
