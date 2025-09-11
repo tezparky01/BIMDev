@@ -9,20 +9,19 @@
   --background: #202124;
   --background-100: #26282b;
   --background-200: #3b3c3f;
-  --font-xs: 10px;
-  --font-sm: 12px;
-  --font-base: 14px;
-  --font-lg: 16px;
-  --font-xl: 18px;
-  --font-2xl: 20px;
-  --font-3xl: 22px;
+
+  --bim-ui_main-base: var(--primary);
+  --bim-ui_accent-base: var(--primary);
 }
 
 * {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  font-size: var(--font-base);
+}
+
+html {
+  font-size: 18px;
 }
 
 #app {
@@ -102,19 +101,8 @@ button:hover {
   row-gap: 15px;
 }
 
-#nav-buttons li {
-  list-style-type: none;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-}
-
-#nav-buttons li:hover {
-  background-color: var(--primary);
+#nav-buttons bim-button {
+  background-color: transparent;
 }
 
 /* Content styles */
