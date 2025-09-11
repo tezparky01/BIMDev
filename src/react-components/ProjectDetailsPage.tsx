@@ -5,6 +5,7 @@ import { ThreeViewer } from "./ThreeViewer";
 import { deleteDocument } from "../firebase";
 import * as BUI from "@thatopen/ui"
 import * as TEMPLATES from "../ui-templates"
+import { setupComponents } from "../bim-components";
 
 interface Props {
   projectsManager: ProjectsManager
@@ -23,9 +24,12 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const viewerGrid = React.useRef<BUI.Grid<["Main"]>>(null)
-  React.useEffect(() => {
+
+  const setupGrid = async () => {
     const { current: grid } = viewerGrid
     if (!grid) return
+
+    const { viewport } = await setupComponents()
 
     grid.elements = {
       header: {
@@ -38,7 +42,7 @@ export function ProjectDetailsPage(props: Props) {
       },
       componentsGrid: {
         template: TEMPLATES.componentsGridTemplate,
-        initialState: {}
+        initialState: { viewport }
       }
     };
 
@@ -53,6 +57,10 @@ export function ProjectDetailsPage(props: Props) {
     }
 
     grid.layout = "Main";
+  }
+
+  React.useEffect(() => {
+    setupGrid()
   }, [])
 
   return (
