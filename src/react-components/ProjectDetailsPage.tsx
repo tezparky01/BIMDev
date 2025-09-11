@@ -3,6 +3,7 @@ import * as Router from "react-router-dom";
 import { ProjectsManager } from "../classes/ProjectsManager";
 import { ThreeViewer } from "./ThreeViewer";
 import { deleteDocument } from "../firebase";
+import * as BUI from "@thatopen/ui"
 
 interface Props {
   projectsManager: ProjectsManager
@@ -19,9 +20,43 @@ export function ProjectDetailsPage(props: Props) {
     await deleteDocument("/projects", id)
     navigateTo("/")
   }
+
+  const viewerGrid = React.useRef<BUI.Grid<["Main"]>>(null)
+  React.useEffect(() => {
+    const { current: grid } = viewerGrid
+    if (!grid) return
+
+    grid.elements = {
+      header: {
+        template: (_) => BUI.html`<div></div>`,
+        initialState: {}
+      },
+      sidebar: {
+        template: (_) => BUI.html`<div></div>`,
+        initialState: {}
+      },
+      componentsGrid: {
+        template: (_) => BUI.html`<div></div>`,
+        initialState: {}
+      }
+    };
+
+    grid.layouts = {
+      Main: {
+        template: `
+          "header header" auto
+          "sidebar componentsGrid" 1fr
+          /auto 1fr
+        `,
+      },
+    }
+
+    grid.layout = "Main";
+  }, [])
+
   return (
-    <div className="page" id="project-details">
-      <header>
+    <bim-grid ref={viewerGrid} className="viewer-grid">
+      {/* <header>
         <div>
           <h2 data-project-info="name">{project.name}</h2>
           <p style={{ color: "#969696" }}>{project.description}</p>
@@ -182,7 +217,7 @@ export function ProjectDetailsPage(props: Props) {
           </div>
         </div>
         <ThreeViewer />
-      </div>
-    </div>
+      </div> */}
+    </bim-grid>
   );
 }
