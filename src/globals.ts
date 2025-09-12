@@ -7,4 +7,8 @@ export const appIcons = {
   DOWNLOAD: "material-symbols:download",
   UPLOAD: "material-symbols:upload",
   PROJECT: "material-symbols:house-rounded",
+  SELECT: "solar:cursor-bold",
+  COLORIZE: "famicons:color-fill",
+  APPLY: "ri:magic-fill",
+  CLEAR: "mingcute:broom-fill",
 }
