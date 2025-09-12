@@ -11,4 +11,7 @@ export const appIcons = {
   COLORIZE: "famicons:color-fill",
   APPLY: "ri:magic-fill",
   CLEAR: "mingcute:broom-fill",
+  SHOW: "mdi:eye",
+  HIDE: "mdi:eye-off",
+  ISOLATE: "mdi:selection-ellipse",
 }
