@@ -14,4 +14,5 @@ export const appIcons = {
   SHOW: "mdi:eye",
   HIDE: "mdi:eye-off",
   ISOLATE: "mdi:selection-ellipse",
+  TRANSPARENT: "mdi:ghost",
 }
