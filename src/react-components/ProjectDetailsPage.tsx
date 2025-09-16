@@ -7,6 +7,7 @@ import * as BUI from "@thatopen/ui"
 import * as TEMPLATES from "../ui-templates"
 import { setupComponents } from "../bim-components";
 import * as OBC from "@thatopen/components"
+import { ComponentsGrid } from "../ui-templates/grids/components/src";
 
 interface Props {
   projectsManager: ProjectsManager
@@ -35,12 +36,8 @@ export function ProjectDetailsPage(props: Props) {
     engineManager = components
 
     grid.elements = {
-      header: {
-        template: (_) => BUI.html`<div></div>`,
-        initialState: {}
-      },
       sidebar: {
-        template: (_) => BUI.html`<div></div>`,
+        template: TEMPLATES.gridSidebarTemplate,
         initialState: {}
       },
       componentsGrid: {
@@ -52,12 +49,18 @@ export function ProjectDetailsPage(props: Props) {
     grid.layouts = {
       Main: {
         template: `
-          "header header" auto
-          "sidebar componentsGrid" 1fr
-          /auto 1fr
+          "sidebar" auto
+          "componentsGrid" 1fr
+          /1fr
         `,
       },
     }
+
+    grid.addEventListener("elementcreated", (e: CustomEvent<BUI.ElementCreatedEventDetail<ComponentsGrid>>) => {
+      const { name, element: componentsGrid } = e.detail
+      if (name !== "componentsGrid") return
+      grid.updateComponent.sidebar({ grid: componentsGrid })
+    })
 
     grid.layout = "Main";
   }

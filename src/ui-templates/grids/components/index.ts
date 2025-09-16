@@ -42,6 +42,18 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
           /22rem 1fr 22rem
         `,
       },
+      Queries: {
+        template: `
+          "viewport queries" 1fr
+          /1fr 22rem
+        `,
+      },
+      Viewer: {
+        template: `
+          "viewport" 1fr
+          /1fr
+        `,
+      },
     };
 
     grid.layout = "Models"

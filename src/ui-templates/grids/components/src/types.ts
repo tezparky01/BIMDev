@@ -22,6 +22,6 @@ export type Models = {
 }
 
 type ComponentsGridElements = [Viewport, ItemsData, Models, Queries];
-type ComponentsGridLayouts = ["Models"];
+type ComponentsGridLayouts = ["Models", "Queries", "Viewer"];
 
 export type ComponentsGrid = BUI.Grid<ComponentsGridLayouts, ComponentsGridElements>
