@@ -12,12 +12,13 @@ const originalMaterialsData = new Map<
 
 export interface ViewerToolbarState {
   components: OBC.Components;
+  world: OBC.World
 }
 
 export const viewerToolbarTemplate: BUI.StatefullComponent<
   ViewerToolbarState
 > = (state) => {
-  const { components } = state;
+  const { components, world } = state;
 
   let colorInput: BUI.ColorInput | undefined;
 
@@ -150,6 +151,17 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     }
   }
 
+  const onFocus = async ({ target }: { target: BUI.Button }) => {
+    if (!(world.camera instanceof OBC.SimpleCamera)) return;
+    const highlighter = components.get(OBF.Highlighter)
+    const selection = highlighter.selection.select;
+    target.loading = true;
+    await world.camera.fitToItems(
+      OBC.ModelIdMapUtils.isEmpty(selection) ? undefined : selection,
+    );
+    target.loading = false;
+  };
+
   return BUI.html`
     <bim-toolbar>
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
@@ -157,6 +169,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
         <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
       </bim-toolbar-section>
       <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
+        <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus}></bim-button>
         <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
         <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
         <bim-button icon=${appIcons.COLORIZE} label="Colorize">

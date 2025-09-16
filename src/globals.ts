@@ -16,4 +16,5 @@ export const appIcons = {
   ISOLATE: "mdi:selection-ellipse",
   TRANSPARENT: "mdi:ghost",
   REFRESH: "radix-icons:update",
+  FOCUS: "ri:focus-mode",
 }

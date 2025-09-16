@@ -6,6 +6,7 @@ import { deleteDocument } from "../firebase";
 import * as BUI from "@thatopen/ui"
 import * as TEMPLATES from "../ui-templates"
 import { setupComponents } from "../bim-components";
+import * as OBC from "@thatopen/components"
 
 interface Props {
   projectsManager: ProjectsManager
@@ -24,12 +25,14 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const viewerGrid = React.useRef<BUI.Grid<["Main"]>>(null)
+  let engineManager: OBC.Components | null = null
 
   const setupGrid = async () => {
     const { current: grid } = viewerGrid
     if (!grid) return
 
     const { components, viewport } = await setupComponents()
+    engineManager = components
 
     grid.elements = {
       header: {
@@ -61,6 +64,10 @@ export function ProjectDetailsPage(props: Props) {
 
   React.useEffect(() => {
     setupGrid()
+    return () => {
+      engineManager?.dispose()
+      engineManager = null
+    }
   }, [])
 
   return (
