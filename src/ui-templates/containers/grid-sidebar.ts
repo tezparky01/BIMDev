@@ -7,6 +7,7 @@ export interface GridSidebarState {
 
 export const gridSidebarTemplate: BUI.StatefullComponent<GridSidebarState> = (
   state,
+  update
 ) => {
   const { grid } = state;
 
@@ -17,9 +18,10 @@ export const gridSidebarTemplate: BUI.StatefullComponent<GridSidebarState> = (
         ${Object.keys(grid.layouts).map((layout) => {
           const onClick = () => {
             grid.layout = layout
+            update()
           }
           return BUI.html`
-            <bim-button @click=${onClick} style="flex: 0" label=${layout}></bim-button> 
+            <bim-button ?active=${grid.layout === layout} @click=${onClick} style="flex: 0" label=${layout}></bim-button> 
           `;
         })}
       </div>
