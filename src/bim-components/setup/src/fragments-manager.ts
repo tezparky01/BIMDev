@@ -8,6 +8,14 @@ export const setupFragmentsManager = (components: OBC.Components, world: OBC.Sim
   fragments.init("/node_modules/@thatopen/fragments/dist/Worker/worker.mjs");
 
   fragments.list.onItemSet.add(async ({ value: model }) => {
+    // Clears the ItemsFinder cache, so the next time a query
+    // is run, it does the search again to include the results from the 
+    // new model
+    const finder = components.get(OBC.ItemsFinder)
+    for (const [, query] of finder.list) {
+      query.clearCache()
+    }
+    
     // useCamera is used to tell the model loaded the camera it must use in order to 
     // update its culling and LOD state.
     // Culling is the process of not rendering what the camera doesn't see.

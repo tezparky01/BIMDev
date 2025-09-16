@@ -13,4 +13,26 @@ export const setupItemsFinder = (components: OBC.Components) => {
       }
     }
   ])
+
+  finder.create("External Walls", [
+    {
+      categories: [/WALL/],
+      relation: {
+        name: "IsDefinedBy",
+        query: {
+          relation: {
+            name: "HasProperties",
+            query: {
+              attributes: {
+                queries: [
+                  { name: /Name/, value: /IsExternal/ },
+                  { name: /NominalValue/, value: true },
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ])
 }
