@@ -20,6 +20,28 @@ export const itemsDataPanelTemplate: BUI.StatefullComponent<
     modelIdMap: {},
   });
 
+  propsTable.dataTransform.Value = (value) => {
+    const onClick = ({ target }: { target: BUI.Label }) => {
+      navigator.clipboard.writeText(value)
+      target.textContent = "Copied!"
+      setTimeout(() => {
+        target.textContent = value
+      }, 500)
+    }
+
+    const onMouseOver = ({ target }: { target: BUI.Label }) => {
+      target.style.color = "var(--primary)"
+    }
+
+    const onMouseLeave = ({ target }: { target: BUI.Label }) => {
+      target.style.removeProperty("color")
+    }
+    
+    return BUI.html`
+      <bim-label @click=${onClick} @mouseleave=${onMouseLeave} @mouseover=${onMouseOver}>${value}</bim-label>
+    `
+  }
+
   highlighter.events.select.onClear.add(() => {
     updatePropsTable({modelIdMap: {}})
   })
