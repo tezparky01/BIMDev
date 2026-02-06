@@ -1,6 +1,5 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
 
 export interface ClipperPanelState {
   components: OBC.Components;
@@ -11,7 +10,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
 
   const createPlane = () => {
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       if (!clipper.world) {
         console.warn("Clipper world not initialized");
         return;
@@ -25,7 +24,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
 
   const deleteAll = () => {
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       clipper.deleteAll();
     } catch (error) {
       console.error("Error deleting planes:", error);
@@ -34,7 +33,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
 
   const toggleClipping = (e: Event) => {
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       const target = e.target as HTMLInputElement;
       clipper.enabled = target.checked;
     } catch (error) {
@@ -44,7 +43,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
 
   const deletePlane = (planeId: string) => {
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       const plane = clipper.list.get(planeId);
       if (plane) {
         clipper.delete(plane);
@@ -56,7 +55,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
 
   const updatePlanesList = (panel: BUI.Panel) => {
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       const planesList = panel.querySelector("[data-planes-list]");
       if (!planesList) return;
 
@@ -103,7 +102,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
     const panel = e as BUI.Panel;
 
     try {
-      const clipper = components.get(OBF.Clipper);
+      const clipper = components.get(OBC.Clipper);
       
       // Update list when planes change
       clipper.list.onItemSet.add(() => updatePlanesList(panel));
