@@ -10,6 +10,8 @@ const originalMaterialsData = new Map<
   { color: number; transparent: boolean; opacity: number; lodOpacity?: number }
 >();
 
+const BUTTON_SELECTOR = 'bim-button';
+
 export interface ViewerToolbarState {
   components: OBC.Components;
   world: OBC.World
@@ -21,10 +23,89 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
   const { components, world } = state;
 
   let colorInput: BUI.ColorInput | undefined;
+  let isDragging = false;
+  let isFloating = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let toolbarStartLeft = 0;
+  let toolbarStartTop = 0;
+  
+  // Store event listeners for cleanup
+  let mouseMoveHandler: ((event: MouseEvent) => void) | null = null;
+  let mouseUpHandler: (() => void) | null = null;
 
   const onInputCreated = (e?: Element) => {
     if (!e) return;
     colorInput = e as BUI.ColorInput;
+  };
+
+  const onToolbarCreated = (e?: Element) => {
+    if (!e) return;
+    const toolbar = e as HTMLElement;
+    
+    // Add double-click to toggle floating mode
+    toolbar.addEventListener('dblclick', (event) => {
+      if ((event.target as HTMLElement).closest(BUTTON_SELECTOR)) return; // Don't toggle if clicking a button
+      
+      isFloating = !isFloating;
+      if (isFloating) {
+        toolbar.setAttribute('data-floating', 'true');
+        const rect = toolbar.getBoundingClientRect();
+        toolbar.style.left = `${rect.left}px`;
+        toolbar.style.top = `${rect.top}px`;
+      } else {
+        toolbar.removeAttribute('data-floating');
+        toolbar.style.left = '';
+        toolbar.style.top = '';
+      }
+    });
+
+    // Add drag functionality when floating
+    toolbar.addEventListener('mousedown', (event) => {
+      if (!isFloating) return;
+      if ((event.target as HTMLElement).closest(BUTTON_SELECTOR)) return; // Don't drag if clicking a button
+      
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+      
+      // Get current position using getBoundingClientRect for reliability
+      const rect = toolbar.getBoundingClientRect();
+      toolbarStartLeft = rect.left;
+      toolbarStartTop = rect.top;
+      
+      toolbar.style.cursor = 'grabbing';
+    });
+
+    // Remove existing listeners if any
+    if (mouseMoveHandler) {
+      document.removeEventListener('mousemove', mouseMoveHandler);
+    }
+    if (mouseUpHandler) {
+      document.removeEventListener('mouseup', mouseUpHandler);
+    }
+
+    // Define handlers
+    mouseMoveHandler = (event: MouseEvent) => {
+      if (!isDragging) return;
+      
+      const deltaX = event.clientX - dragStartX;
+      const deltaY = event.clientY - dragStartY;
+      
+      toolbar.style.left = `${toolbarStartLeft + deltaX}px`;
+      toolbar.style.top = `${toolbarStartTop + deltaY}px`;
+    };
+
+    mouseUpHandler = () => {
+      if (isDragging) {
+        isDragging = false;
+        toolbar.style.cursor = 'move';
+      }
+    };
+
+    // Add listeners
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
   };
 
   const onApplyColor = async ({ target: button }: { target: BUI.Button }) => {
@@ -172,6 +253,51 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     }
   };
 
+  const onCreateXPlane = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      const camera = world.camera as OBC.SimpleCamera;
+      const center = camera.controls.getTarget(new THREE.Vector3());
+      clipper.createFromNormalAndCoplanarPoint(
+        world,
+        new THREE.Vector3(1, 0, 0), // X-axis normal
+        center
+      );
+    } catch (error) {
+      console.error("Error creating X-plane:", error);
+    }
+  };
+
+  const onCreateYPlane = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      const camera = world.camera as OBC.SimpleCamera;
+      const center = camera.controls.getTarget(new THREE.Vector3());
+      clipper.createFromNormalAndCoplanarPoint(
+        world,
+        new THREE.Vector3(0, 1, 0), // Y-axis normal
+        center
+      );
+    } catch (error) {
+      console.error("Error creating Y-plane:", error);
+    }
+  };
+
+  const onCreateZPlane = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      const camera = world.camera as OBC.SimpleCamera;
+      const center = camera.controls.getTarget(new THREE.Vector3());
+      clipper.createFromNormalAndCoplanarPoint(
+        world,
+        new THREE.Vector3(0, 0, 1), // Z-axis normal
+        center
+      );
+    } catch (error) {
+      console.error("Error creating Z-plane:", error);
+    }
+  };
+
   const onDeleteAllClippingPlanes = () => {
     try {
       const clipper = components.get(OBC.Clipper);
@@ -229,12 +355,15 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
   };
 
   return BUI.html`
-    <bim-toolbar>
+    <bim-toolbar data-dockable="true" style="position: relative;" ${BUI.ref(onToolbarCreated)}>
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
         <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
         <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
-        <bim-button icon="mdi:content-cut" label="Create Section Plane" @click=${onCreateClippingPlane}></bim-button>
-        <bim-button icon="mdi:delete-sweep" label="Delete All Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
+        <bim-button icon="mdi:content-cut" label="+Plane" @click=${onCreateClippingPlane}></bim-button>
+        <bim-button icon="mdi:axis-x-arrow" label="+X Plane" @click=${onCreateXPlane}></bim-button>
+        <bim-button icon="mdi:axis-y-arrow" label="+Y Plane" @click=${onCreateYPlane}></bim-button>
+        <bim-button icon="mdi:axis-z-arrow" label="+Z Plane" @click=${onCreateZPlane}></bim-button>
+        <bim-button icon="mdi:delete-sweep" label="-Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
       </bim-toolbar-section>
       <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
         <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus}></bim-button>

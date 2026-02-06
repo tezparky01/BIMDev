@@ -9,6 +9,9 @@
   --background: #202124;
   --background-100: #26282b;
   --background-200: #3b3c3f;
+  
+  /* Toolbar responsive breakpoint */
+  --toolbar-breakpoint: 1200px;
 
   --bim-ui_main-base: var(--primary);
   --bim-ui_accent-base: var(--primary);
@@ -443,6 +446,63 @@ bim-toolbar bim-button {
 
 bim-toolbar bim-button bim-label {
   color: white !important;
+}
+
+/* Responsive and dockable toolbar styles */
+bim-toolbar {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  transition: all 0.3s ease;
+}
+
+bim-toolbar[data-dockable="true"] {
+  position: relative;
+  cursor: move;
+}
+
+bim-toolbar[data-floating="true"] {
+  position: absolute;
+  z-index: 1000;
+  background: var(--bim-ui_bg-base);
+  border: 1px solid var(--bim-ui_bg-contrast-40);
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+}
+
+/* Make toolbar sections wrap on smaller screens */
+/* Breakpoint: 1200px (corresponds to --toolbar-breakpoint in :root) */
+@media (max-width: 1200px) {
+  bim-toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+/* Compact toolbar buttons for better space usage */
+bim-toolbar-section {
+  max-width: fit-content;
+}
+
+/* Scrollbar styling for toolbar */
+bim-toolbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+bim-toolbar::-webkit-scrollbar-track {
+  background: var(--bim-ui_bg-contrast-20);
+  border-radius: 3px;
+}
+
+bim-toolbar::-webkit-scrollbar-thumb {
+  background: var(--bim-ui_bg-contrast-40);
+  border-radius: 3px;
+}
+
+bim-toolbar::-webkit-scrollbar-thumb:hover {
+  background: var(--bim-ui_bg-contrast-60);
 }
 
 /* Resizable panel handles */
