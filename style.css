@@ -430,8 +430,32 @@ bim-context-menu {
   position: relative;
   border: 1px solid var(--bim-ui_bg-contrast-40);
   border-radius: 0.25rem;
-  overflow: auto;
+  /* Changed from 'auto' to 'hidden' - context menus now use absolute positioning to overflow */
+  overflow: hidden;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewport-container bim-grid {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.viewport-container bim-toolbar {
+  flex-shrink: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Allow context menus to overflow the toolbar - positioned above other toolbar elements */
+.viewport-container bim-toolbar bim-context-menu {
+  position: absolute;
+  /* Higher than toolbar z-index (10) to ensure menus appear on top */
+  z-index: 1001;
 }
 
 bim-grid[floating] > bim-toolbar {
@@ -471,6 +495,9 @@ bim-toolbar[data-floating="true"] {
   border-radius: 0.25rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
+  /* Ensure toolbar stays within viewport */
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
 }
 
 /* Make toolbar sections wrap on smaller screens */
@@ -484,6 +511,18 @@ bim-toolbar[data-floating="true"] {
 /* Compact toolbar buttons for better space usage */
 bim-toolbar-section {
   max-width: fit-content;
+}
+
+/* Context menu styling for better organization */
+bim-toolbar bim-context-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+bim-toolbar bim-context-menu bim-button {
+  justify-content: flex-start;
+  width: 100%;
 }
 
 /* Scrollbar styling for toolbar */

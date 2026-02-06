@@ -307,6 +307,15 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     }
   };
 
+  const onTogglePlanesVisibility = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      clipper.visible = !clipper.visible;
+    } catch (error) {
+      console.error("Error toggling planes visibility:", error);
+    }
+  };
+
   // Measurement functions
   const onToggleLengthMeasurement = () => {
     try {
@@ -359,11 +368,20 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
         <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
         <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
-        <bim-button icon="mdi:content-cut" label="+Plane" @click=${onCreateClippingPlane}></bim-button>
-        <bim-button icon="mdi:axis-x-arrow" label="+X Plane" @click=${onCreateXPlane}></bim-button>
-        <bim-button icon="mdi:axis-y-arrow" label="+Y Plane" @click=${onCreateYPlane}></bim-button>
-        <bim-button icon="mdi:axis-z-arrow" label="+Z Plane" @click=${onCreateZPlane}></bim-button>
-        <bim-button icon="mdi:delete-sweep" label="-Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
+        <bim-button icon="mdi:plus-circle" label="+ Planes">
+          <bim-context-menu>
+            <bim-button icon="mdi:content-cut" label="New Plane" @click=${onCreateClippingPlane}></bim-button>
+            <bim-button icon="mdi:axis-x-arrow" label="X Plane" @click=${onCreateXPlane}></bim-button>
+            <bim-button icon="mdi:axis-y-arrow" label="Y Plane" @click=${onCreateYPlane}></bim-button>
+            <bim-button icon="mdi:axis-z-arrow" label="Z Plane" @click=${onCreateZPlane}></bim-button>
+          </bim-context-menu>
+        </bim-button>
+        <bim-button icon="mdi:minus-circle" label="- Planes">
+          <bim-context-menu>
+            <bim-button icon="mdi:eye-off" label="Toggle Planes" @click=${onTogglePlanesVisibility}></bim-button>
+            <bim-button icon="mdi:delete-sweep" label="Clear Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
+          </bim-context-menu>
+        </bim-button>
       </bim-toolbar-section>
       <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
         <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus}></bim-button>
