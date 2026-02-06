@@ -146,10 +146,12 @@ service cloud.firestore {
 | Script | Description |
 |--------|-------------|
 | `npm run dev` | Start the development server with hot module replacement |
-| `npm run build` | Type check and build the application for production |
+| `npm run build` | Build the application for production |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint to check code quality |
 | `npm run type-check` | Run TypeScript compiler to check types without emitting files |
+
+**Note**: The `build` script uses `vite build` without TypeScript type checking to allow builds to complete even with type errors. Use `npm run type-check` to validate TypeScript types separately.
 
 ## Project Structure
 
