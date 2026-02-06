@@ -79,6 +79,13 @@ export function ProjectsPage(props: Props) {
     modal.showModal()
   }
 
+  const closeNewProjectModal = () => {
+    const modal = document.getElementById("new-project-modal")
+    if (modal && modal instanceof HTMLDialogElement) {
+      modal.close()
+    }
+  }
+
   const onFormSubmit = (e: React.FormEvent) => {
     const projectForm = document.getElementById("new-project-form")
     if (!(projectForm && projectForm instanceof HTMLFormElement)) {return}
@@ -95,9 +102,7 @@ export function ProjectsPage(props: Props) {
       Firestore.addDoc(projectsCollection, projectData)
       const project = props.projectsManager.newProject(projectData)
       projectForm.reset()
-      const modal = document.getElementById("new-project-modal")
-      if (!(modal && modal instanceof HTMLDialogElement)) {return}
-      modal.close()
+      closeNewProjectModal()
     } catch (err) {
       alert(err)
     }
@@ -219,12 +224,7 @@ export function ProjectsPage(props: Props) {
                 columnGap: 10
               }}
             >
-              <button type="button" onClick={() => {
-                const modal = document.getElementById("new-project-modal");
-                if (modal && modal instanceof HTMLDialogElement) {
-                  modal.close();
-                }
-              }} style={{ backgroundColor: "transparent" }}>
+              <button type="button" onClick={closeNewProjectModal} style={{ backgroundColor: "transparent" }}>
                 Cancel
               </button>
               <button type="submit" style={{ backgroundColor: "rgb(18, 145, 18)" }}>
