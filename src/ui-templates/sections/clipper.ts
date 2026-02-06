@@ -108,8 +108,8 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
       clipper.list.onItemSet.add(() => updatePlanesList(panel));
       clipper.list.onItemDeleted.add(() => updatePlanesList(panel));
 
-      // Initial update
-      setTimeout(() => updatePlanesList(panel), 100);
+      // Initial update - use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => updatePlanesList(panel));
     } catch (error) {
       console.error("Error initializing clipper panel:", error);
     }
