@@ -26,7 +26,7 @@ export class Project implements IProject {
 
   constructor(data: IProject, id = uuidv4()) {
     for (const key in data) {
-      this[key] = data[key]
+      (this as any)[key] = data[key as keyof IProject]
     }
     this.id = id
   }

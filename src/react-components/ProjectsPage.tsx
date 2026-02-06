@@ -17,6 +17,7 @@ const projectsCollection = getCollection<IProject>("projects")
 export function ProjectsPage(props: Props) {
 
   const [projects, setProjects] = React.useState<Project[]>(props.projectsManager.list)
+  const [editingProject, setEditingProject] = React.useState<Project | null>(null)
   props.projectsManager.OnProjectCreated = () => {setProjects([...props.projectsManager.list])}
 
   const getFirestoreProjects = async () => {
@@ -39,10 +40,31 @@ export function ProjectsPage(props: Props) {
     getFirestoreProjects()
   }, [])
 
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    const modal = document.getElementById("edit-project-modal");
+    if (modal && modal instanceof HTMLDialogElement) {
+      modal.showModal();
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!editingProject) return;
+    if (confirm(`Are you sure you want to delete "${editingProject.name}"?`)) {
+      await props.projectsManager.deleteProject(editingProject.id);
+      setProjects([...props.projectsManager.list]);
+      const modal = document.getElementById("edit-project-modal");
+      if (modal && modal instanceof HTMLDialogElement) {
+        modal.close();
+      }
+      setEditingProject(null);
+    }
+  };
+
   const projectCards = projects.map((project) => {
     return (
       <Router.Link to={`/project/${project.id}`} key={project.id} >
-        <ProjectCard project={project} />
+        <ProjectCard project={project} onEdit={handleEditProject} />
       </Router.Link>
     )
   })
@@ -78,6 +100,34 @@ export function ProjectsPage(props: Props) {
       modal.close()
     } catch (err) {
       alert(err)
+    }
+  }
+
+  const onEditFormSubmit = async (e: React.FormEvent) => {
+    const projectForm = document.getElementById("edit-project-form");
+    if (!(projectForm && projectForm instanceof HTMLFormElement) || !editingProject) {return}
+    e.preventDefault();
+    const formData = new FormData(projectForm);
+    const projectData: IProject = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      status: formData.get("status") as ProjectStatus,
+      userRole: formData.get("userRole") as UserRole,
+      finishDate: new Date(formData.get("finishDate") as string)
+    };
+    try {
+      // Update project properties
+      Object.assign(editingProject, projectData);
+      // Update in Firestore
+      const projectDoc = Firestore.doc(projectsCollection, editingProject.id);
+      await Firestore.updateDoc(projectDoc, projectData as any);
+      setProjects([...props.projectsManager.list]);
+      const modal = document.getElementById("edit-project-modal");
+      if (!(modal && modal instanceof HTMLDialogElement)) {return}
+      modal.close();
+      setEditingProject(null);
+    } catch (err) {
+      alert(err);
     }
   }
 
@@ -127,7 +177,7 @@ export function ProjectsPage(props: Props) {
                 name="description"
                 cols={30}
                 rows={5}
-                placeholder="Give your project a nice description! So people is jealous about it."
+                placeholder="Give your MOHUP project a description."
                 defaultValue={""}
               />
             </div>
@@ -172,6 +222,97 @@ export function ProjectsPage(props: Props) {
               <button type="submit" style={{ backgroundColor: "rgb(18, 145, 18)" }}>
                 Accept
               </button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="edit-project-modal">
+        <form onSubmit={(e) => onEditFormSubmit(e)} id="edit-project-form">
+          <h2>Edit Project</h2>
+          <div className="input-list">
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">apartment</span>Name
+              </label>
+              <input
+                name="name"
+                type="text"
+                defaultValue={editingProject?.name || ""}
+                key={editingProject?.id}
+                placeholder="What's the name of your project?"
+              />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">subject</span>Description
+              </label>
+              <textarea
+                name="description"
+                cols={30}
+                rows={5}
+                defaultValue={editingProject?.description || ""}
+                key={editingProject?.id + "-desc"}
+                placeholder="Give your project a nice description!"
+              />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">person</span>Role
+              </label>
+              <select name="userRole" defaultValue={editingProject?.userRole || "Architect"} key={editingProject?.id + "-role"}>
+                <option>Architect</option>
+                <option>Engineer</option>
+                <option>Developer</option>
+              </select>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">not_listed_location</span>
+                Status
+              </label>
+              <select name="status" defaultValue={editingProject?.status || "Pending"} key={editingProject?.id + "-status"}>
+                <option>Pending</option>
+                <option>Active</option>
+                <option>Finished</option>
+              </select>
+            </div>
+            <div className="form-field-container">
+              <label htmlFor="finishDate">
+                <span className="material-icons-round">calendar_month</span>
+                Finish Date
+              </label>
+              <input 
+                name="finishDate" 
+                type="date" 
+                defaultValue={editingProject?.finishDate ? editingProject.finishDate.toISOString().split('T')[0] : ""}
+                key={editingProject?.id + "-date"}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                margin: "10px 0px 10px auto",
+                columnGap: 10,
+                justifyContent: "space-between"
+              }}
+            >
+              <button type="button" onClick={handleDeleteProject} style={{ backgroundColor: "red" }}>
+                Delete Project
+              </button>
+              <div style={{ display: "flex", columnGap: 10 }}>
+                <button type="button" onClick={() => {
+                  const modal = document.getElementById("edit-project-modal");
+                  if (modal && modal instanceof HTMLDialogElement) {
+                    modal.close();
+                    setEditingProject(null);
+                  }
+                }} style={{ backgroundColor: "transparent" }}>
+                  Cancel
+                </button>
+                <button type="submit" style={{ backgroundColor: "rgb(18, 145, 18)" }}>
+                  Save Changes
+                </button>
+              </div>
             </div>
           </div>
         </form>

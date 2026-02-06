@@ -4,9 +4,18 @@ import { appIcons } from "../globals";
 
 interface Props {
   project: Project;
+  onEdit?: (project: Project) => void;
 }
 
 export function ProjectCard(props: Props) {
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (props.onEdit) {
+      props.onEdit(props.project);
+    }
+  };
+
   return (
     <div className="project-card">
       <div className="card-header">
@@ -20,10 +29,27 @@ export function ProjectCard(props: Props) {
         >
           HC
         </p>
-        <div>
+        <div style={{flex: 1}}>
           <bim-label style={{color: "white", fontSize: "1rem"}}>{ props.project.name }</bim-label>
           <bim-label>{ props.project.description }</bim-label>
         </div>
+        {props.onEdit && (
+          <button 
+            onClick={handleEdit}
+            style={{
+              backgroundColor: "#129121",
+              color: "white",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              marginLeft: "10px"
+            }}
+          >
+            Edit
+          </button>
+        )}
       </div>
       <div className="card-content">
         <div className="card-property">

@@ -26,7 +26,12 @@ export type Models = {
   state: ModelsPanelState
 }
 
-type ComponentsGridElements = [Viewport, ItemsData, Models, Queries, DataSources];
-type ComponentsGridLayouts = ["Models", "Queries", "Viewer"];
+export type Quality = {
+  name: "quality";
+  state: import("../../../sections").QualityPanelState
+}
+
+type ComponentsGridElements = [Viewport, ItemsData, Models, Queries, DataSources, Quality];
+type ComponentsGridLayouts = ["Models", "Queries", "Viewer", "Quality"];
 
 export type ComponentsGrid = BUI.Grid<ComponentsGridLayouts, ComponentsGridElements>

@@ -20,6 +20,11 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 html {
   font-size: 18px;
 }
@@ -31,6 +36,11 @@ html {
   height: 100vh;
   background-color: var(--background);
   color: #fff;
+  transition: grid-template-columns 0.3s ease;
+}
+
+#app.sidebar-collapsed {
+  grid-template-columns: 4rem 1fr;
 }
 
 
@@ -79,11 +89,55 @@ button:hover {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 /* Sidebar styles */
 
 #sidebar {
+  position: relative;
+  transition: padding 0.3s ease, width 0.3s ease;
+}
+
+#sidebar.collapsed {
+  padding: 25px 10px;
+}
+
+#sidebar.collapsed #company-logo {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+#sidebar.collapsed #nav-buttons bim-button {
+  justify-content: center;
+}
+
+#sidebar-toggle {
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 0;
+  background-color: var(--background-100);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: background-color 0.2s ease;
+}
+
+#sidebar-toggle:hover {
+  background-color: var(--primary);
+}
+
+#sidebar-toggle .material-icons-round {
+  font-size: 20px;
   border-right: 1px solid var(--bim-ui_bg-contrast-40);
   padding: 25px;
   display: flex;
@@ -92,7 +146,7 @@ button:hover {
 }
 
 #company-logo {
-	height: 65px;
+	height: 215px;
 }
 
 #nav-buttons {
@@ -103,6 +157,11 @@ button:hover {
 
 #nav-buttons bim-button {
   background-color: transparent;
+  --bim-label--c: white !important;
+}
+
+#nav-buttons bim-button bim-label {
+  color: white !important;
 }
 
 /* Content styles */
@@ -289,11 +348,25 @@ bim-grid {
 
 .components-grid, .viewport-grid {
   padding: 1rem;
+  height: 100%;
+  max-height: 100vh;
+}
+
+.components-grid > * {
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 bim-panel-section {
   --bim-panel-section_hc: var(--primary);
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  min-height: 0;
 }
 
 :not(bim-panel) > bim-panel-section {
@@ -303,6 +376,18 @@ bim-panel-section {
 
 bim-panel-section > bim-table {
   flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Prevent internal content from expanding the panel */
+bim-panel-section > * {
+  min-height: 0;
+}
+
+bim-panel-section bim-table {
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 bim-grid[floating] {
@@ -311,6 +396,20 @@ bim-grid[floating] {
 
 bim-table {
   border-radius: var(--bim-ui_size-4xs);
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+bim-table > * {
+  min-height: 0;
+}
+
+/* Force table body to scroll */
+bim-table::part(table-body) {
+  overflow-y: auto !important;
+  max-height: 100%;
 }
 
 bim-context-menu {
@@ -336,4 +435,66 @@ bim-grid[floating] > bim-toolbar {
   border: none;
   justify-self: center;
   outline: 1px solid var(--bim-ui_bg-contrast-40);
+}
+
+bim-toolbar bim-button {
+  --bim-label--c: white !important;
+}
+
+bim-toolbar bim-button bim-label {
+  color: white !important;
+}
+
+/* Resizable panel handles */
+.resize-handle {
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  z-index: 1001;
+  cursor: ew-resize;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+  background: var(--bim-ui_bg-contrast-20);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.resize-handle-left {
+  left: -3px;
+}
+
+.resize-handle-right {
+  right: -3px;
+}
+
+.resize-handle:hover::before,
+.resize-handle.resizing::before {
+  width: 3px;
+  height: 60px;
+  background: var(--bim-ui_accent-base, #029AE0);
+  box-shadow: 0 0 8px rgba(2, 154, 224, 0.4);
+}
+
+.resize-handle:hover {
+  background: rgba(2, 154, 224, 0.1);
+}
+
+.resize-handle.resizing {
+  background: rgba(2, 154, 224, 0.15);
+}
+
+/* Ensure grid children can be positioned for handles */
+bim-grid.components-grid > * {
+  position: relative;
 }

@@ -17,4 +17,5 @@ export const appIcons = {
   TRANSPARENT: "mdi:ghost",
   REFRESH: "radix-icons:update",
   FOCUS: "ri:focus-mode",
+  QUALITY: "mdi:clipboard-check",
 }
