@@ -488,11 +488,48 @@ bim-toolbar bim-button bim-label {
 /* Responsive and dockable toolbar styles */
 bim-toolbar {
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden; /* Changed from auto to hidden - no scroll bar */
   overflow-y: hidden;
   display: flex;
   flex-wrap: nowrap;
   transition: all 0.3s ease;
+}
+
+/* Toolbar sections - collapsed by default */
+bim-toolbar-section {
+  max-width: fit-content;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Hide buttons in collapsed sections */
+bim-toolbar-section bim-button {
+  display: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Show buttons in expanded sections */
+bim-toolbar-section[data-expanded="true"] bim-button {
+  display: flex;
+  opacity: 1;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Make section labels clickable */
+bim-toolbar-section::part(label) {
+  cursor: pointer;
+  user-select: none;
 }
 
 bim-toolbar[data-dockable="true"] {
@@ -531,30 +568,15 @@ bim-toolbar bim-context-menu {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  /* No blur or backdrop effects */
+  background: var(--bim-ui_bg-base);
+  border: 1px solid var(--bim-ui_bg-contrast-20);
+  border-radius: 0.25rem;
 }
 
 bim-toolbar bim-context-menu bim-button {
   justify-content: flex-start;
   width: 100%;
-}
-
-/* Scrollbar styling for toolbar */
-bim-toolbar::-webkit-scrollbar {
-  height: 6px;
-}
-
-bim-toolbar::-webkit-scrollbar-track {
-  background: var(--bim-ui_bg-contrast-20);
-  border-radius: 3px;
-}
-
-bim-toolbar::-webkit-scrollbar-thumb {
-  background: var(--bim-ui_bg-contrast-40);
-  border-radius: 3px;
-}
-
-bim-toolbar::-webkit-scrollbar-thumb:hover {
-  background: var(--bim-ui_bg-contrast-60);
 }
 
 /* Resizable panel handles */
