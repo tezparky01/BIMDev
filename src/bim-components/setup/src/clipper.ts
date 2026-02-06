@@ -2,11 +2,6 @@ import * as OBC from "@thatopen/components"
 
 /**
  * Track if clipper interaction has been set up to prevent duplicate event listeners.
- * 
- * Note: This is a module-level flag because setupComponents() is called once per page load
- * in ProjectDetailsPage.tsx, and the entire Components instance is disposed on unmount.
- * For applications with multiple worlds or dynamic component creation, consider using
- * a WeakMap keyed by world instance instead.
  */
 let isClipperInteractionSetup = false;
 
@@ -17,9 +12,6 @@ let isClipperInteractionSetup = false;
  * - Double-click on a model to create a clipping plane at that location
  * - Press Delete key to remove clipping planes
  * - Use toolbar buttons to manage all clipping planes
- * 
- * @param components - The ThatOpen Components instance
- * @param world - The 3D world where clipping planes will be created
  */
 export const setupClipper = (components: OBC.Components, world: OBC.World) => {
   const clipper = components.get(OBC.Clipper);
@@ -62,8 +54,6 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
   window.addEventListener('keydown', handleKeyDown);
 
   // Wait for renderer to be ready before setting up canvas interactions
-  // The 100ms delay ensures the renderer's DOM element is fully initialized
-  // before we attach event listeners. Alternative: use a promise-based readiness check.
   const RENDERER_READY_DELAY = 100;
   setTimeout(setupClipperInteraction, RENDERER_READY_DELAY);
 }
