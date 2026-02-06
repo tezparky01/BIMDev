@@ -12,7 +12,7 @@ export const setupComponents = async () => {
   setupHighlighter(components, world)
   setupItemsFinder(components)
   setupDataEnhancer(components)
-  setupClipper(components)
+  setupClipper(components, world)
 
   components.init()
 
