@@ -8,15 +8,27 @@ export interface ClipperPanelState {
 export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (state) => {
   const { components } = state;
 
-  const createPlane = () => {
+  const getWorld = (): OBC.World | null => {
+    try {
+      const worlds = components.get(OBC.Worlds);
+      const worldsList = Array.from(worlds.list.values());
+      return worldsList.length > 0 ? worldsList[0] : null;
+    } catch (error) {
+      console.error("Error getting world:", error);
+      return null;
+    }
+  };
+
+  const createPlane = async () => {
     try {
       const clipper = components.get(OBC.Clipper);
-      if (!clipper.world) {
-        console.warn("Clipper world not initialized");
+      const world = getWorld();
+      if (!world) {
+        console.warn("World not initialized");
         return;
       }
       
-      clipper.create(clipper.world);
+      await clipper.create(world);
     } catch (error) {
       console.error("Error creating plane:", error);
     }
@@ -41,13 +53,15 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
     }
   };
 
-  const deletePlane = (planeId: string) => {
+  const deletePlane = async (planeId: string) => {
     try {
       const clipper = components.get(OBC.Clipper);
-      const plane = clipper.list.get(planeId);
-      if (plane) {
-        clipper.delete(plane);
+      const world = getWorld();
+      if (!world) {
+        console.warn("World not initialized");
+        return;
       }
+      await clipper.delete(world, planeId);
     } catch (error) {
       console.error("Error deleting plane:", error);
     }
@@ -59,7 +73,7 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
       const planesList = panel.querySelector("[data-planes-list]");
       if (!planesList) return;
 
-      const planes = Array.from(clipper.list.values());
+      const planes = Array.from(clipper.list.entries());
       
       if (planes.length === 0) {
         planesList.innerHTML = `
@@ -70,13 +84,13 @@ export const clipperPanelTemplate: BUI.StatefullComponent<ClipperPanelState> = (
         return;
       }
 
-      planesList.innerHTML = planes.map((plane, index) => `
+      planesList.innerHTML = planes.map(([planeId], index) => `
         <div style="display: flex; align-items: center; padding: 0.5rem; border-bottom: 1px solid #eee;">
           <span style="flex: 1;">Plane ${index + 1}</span>
           <bim-button 
             label="Delete" 
             icon="mdi:delete"
-            data-plane-id="${plane.uuid}"
+            data-plane-id="${planeId}"
             style="--bim-button--bgc: #f44336; --bim-label--c: white; padding: 0.25rem 0.5rem;">
           </bim-button>
         </div>
