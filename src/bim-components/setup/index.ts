@@ -1,5 +1,5 @@
 import * as OBC from "@thatopen/components";
-import { createWorld, setupDataEnhancer, setupFragmentsManager, setupHighlighter, setupIfcLoader, setupItemsFinder } from "./src";
+import { createWorld, setupDataEnhancer, setupFragmentsManager, setupHighlighter, setupIfcLoader, setupItemsFinder, setupClipper, setupClipStyler } from "./src";
 import * as BUI from "@thatopen/ui"
 import { loadModelBtnTemplate } from "../../ui-templates";
 
@@ -12,6 +12,8 @@ export const setupComponents = async () => {
   setupHighlighter(components, world)
   setupItemsFinder(components)
   setupDataEnhancer(components)
+  setupClipper(components, world)
+  setupClipStyler(components, world)
 
   components.init()
 
