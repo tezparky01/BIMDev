@@ -421,7 +421,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
           </bim-context-menu>
         </bim-button>
       </bim-toolbar-section>
-      <bim-toolbar-section label="Measures" icon="mdi:ruler" data-section-name="measures">
+      <bim-toolbar-section label="Measurement" icon="mdi:ruler" data-section-name="measures">
         <bim-button icon="mdi:chevron-down" @click=${toggleSection('measures')} data-toggle-btn="true" label=""></bim-button>
         <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true"></bim-button>
         <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true"></bim-button>
