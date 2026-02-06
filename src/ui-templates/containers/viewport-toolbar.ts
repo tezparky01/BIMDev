@@ -33,10 +33,38 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
   // Store event listeners for cleanup
   let mouseMoveHandler: ((event: MouseEvent) => void) | null = null;
   let mouseUpHandler: (() => void) | null = null;
+  
+  // Track expanded section
+  let expandedSection: string | null = null;
 
   const onInputCreated = (e?: Element) => {
     if (!e) return;
     colorInput = e as BUI.ColorInput;
+  };
+
+  const toggleSection = (sectionName: string) => (e: Event) => {
+    const button = e.currentTarget as HTMLElement;
+    const section = button.closest('bim-toolbar-section') as HTMLElement;
+    const toolbar = section?.closest('bim-toolbar') as HTMLElement;
+    if (!toolbar) return;
+    
+    // Get all sections
+    const allSections = toolbar.querySelectorAll('bim-toolbar-section');
+    
+    const isExpanded = section.getAttribute('data-expanded') === 'true';
+    
+    if (isExpanded) {
+      // Collapse current section
+      section.removeAttribute('data-expanded');
+      expandedSection = null;
+    } else {
+      // Collapse all other sections
+      allSections.forEach(s => s.removeAttribute('data-expanded'));
+      
+      // Expand clicked section
+      section.setAttribute('data-expanded', 'true');
+      expandedSection = sectionName;
+    }
   };
 
   const onToolbarCreated = (e?: Element) => {
@@ -275,7 +303,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       const center = camera.controls.getTarget(new THREE.Vector3());
       clipper.createFromNormalAndCoplanarPoint(
         world,
-        new THREE.Vector3(0, 1, 0), // Y-axis normal
+        new THREE.Vector3(0, 0, 1), // Z-axis normal (vertical in BIM/IFC convention)
         center
       );
     } catch (error) {
@@ -290,7 +318,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       const center = camera.controls.getTarget(new THREE.Vector3());
       clipper.createFromNormalAndCoplanarPoint(
         world,
-        new THREE.Vector3(0, 0, 1), // Z-axis normal
+        new THREE.Vector3(0, 1, 0), // Y-axis normal (horizontal in BIM/IFC convention)
         center
       );
     } catch (error) {
@@ -365,44 +393,39 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
 
   return BUI.html`
     <bim-toolbar data-dockable="true" style="position: relative;" ${BUI.ref(onToolbarCreated)}>
-      <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
-        <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
-        <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
-        <bim-button icon="mdi:plus-circle" label="+ Planes">
-          <bim-context-menu>
-            <bim-button icon="mdi:content-cut" label="New Plane" @click=${onCreateClippingPlane}></bim-button>
-            <bim-button icon="mdi:axis-x-arrow" label="X Plane" @click=${onCreateXPlane}></bim-button>
-            <bim-button icon="mdi:axis-y-arrow" label="Y Plane" @click=${onCreateYPlane}></bim-button>
-            <bim-button icon="mdi:axis-z-arrow" label="Z Plane" @click=${onCreateZPlane}></bim-button>
-          </bim-context-menu>
-        </bim-button>
-        <bim-button icon="mdi:minus-circle" label="- Planes">
-          <bim-context-menu>
-            <bim-button icon="mdi:eye-off" label="Toggle Planes" @click=${onTogglePlanesVisibility}></bim-button>
-            <bim-button icon="mdi:delete-sweep" label="Clear Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
-          </bim-context-menu>
-        </bim-button>
+      <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW} data-section-name="visibility">
+        <bim-button icon="mdi:chevron-down" @click=${toggleSection('visibility')} data-toggle-btn="true" label=""></bim-button>
+        <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll} data-section-tool="true"></bim-button> 
+        <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:content-cut" label="New Plane" @click=${onCreateClippingPlane} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:axis-x-arrow" label="X Plane" @click=${onCreateXPlane} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:axis-y-arrow" label="Y Plane" @click=${onCreateYPlane} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:axis-z-arrow" label="Z Plane" @click=${onCreateZPlane} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:eye-off" label="Toggle Planes" @click=${onTogglePlanesVisibility} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:delete-sweep" label="Clear Planes" @click=${onDeleteAllClippingPlanes} data-section-tool="true"></bim-button>
       </bim-toolbar-section>
-      <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
-        <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus}></bim-button>
-        <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
-        <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
-        <bim-button icon=${appIcons.COLORIZE} label="Colorize">
+      <bim-toolbar-section label="Selection" icon=${appIcons.SELECT} data-section-name="selection">
+        <bim-button icon="mdi:chevron-down" @click=${toggleSection('selection')} data-toggle-btn="true" label=""></bim-button>
+        <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus} data-section-tool="true"></bim-button>
+        <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide} data-section-tool="true"></bim-button> 
+        <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate} data-section-tool="true"></bim-button>
+        <bim-button icon=${appIcons.COLORIZE} label="Colorize" data-section-tool="true">
           <bim-context-menu>
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <bim-color-input ${BUI.ref(onInputCreated)}></bim-color-input> <!-- custom color input from That Open Engine -->
+              <bim-color-input ${BUI.ref(onInputCreated)}></bim-color-input>
               <div style="display: flex; gap: 0.5rem">
                 <bim-button @click=${onApplyColor} icon=${appIcons.APPLY} label="Apply"></bim-button>
-                <bim-button icon=${appIcons.CLEAR} label="Reset" @click=${onReset}></bim-buttom>
+                <bim-button icon=${appIcons.CLEAR} label="Reset" @click=${onReset}></bim-button>
               </div>
             </div>
           </bim-context-menu>
         </bim-button>
       </bim-toolbar-section>
-      <bim-toolbar-section label="Measure" icon="mdi:ruler">
-        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement}></bim-button>
-        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement}></bim-button>
-        <bim-button icon="mdi:delete" label="Delete All Measurements" @click=${onDeleteAllMeasurements}></bim-button>
+      <bim-toolbar-section label="Measurement" icon="mdi:ruler" data-section-name="measures">
+        <bim-button icon="mdi:chevron-down" @click=${toggleSection('measures')} data-toggle-btn="true" label=""></bim-button>
+        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:delete" label="Delete All Measurements" @click=${onDeleteAllMeasurements} data-section-tool="true"></bim-button>
       </bim-toolbar-section>
     </bim-toolbar>
   `;
