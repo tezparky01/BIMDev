@@ -493,43 +493,56 @@ bim-toolbar {
   display: flex;
   flex-wrap: nowrap;
   transition: all 0.3s ease;
+  gap: 0.5rem;
 }
 
 /* Toolbar sections - collapsed by default */
 bim-toolbar-section {
-  max-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
   transition: all 0.3s ease;
   position: relative;
+  border: 1px solid var(--bim-ui_bg-contrast-20);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
 }
 
-/* Hide buttons in collapsed sections */
-bim-toolbar-section bim-button {
+/* Toggle button - always visible */
+bim-toolbar-section bim-button[data-toggle-btn="true"] {
+  display: flex !important;
+  min-width: 2rem;
+  transition: transform 0.3s ease;
+}
+
+/* Rotate toggle icon when expanded */
+bim-toolbar-section[data-expanded="true"] bim-button[data-toggle-btn="true"] {
+  transform: rotate(180deg);
+}
+
+/* Hide tool buttons in collapsed sections */
+bim-toolbar-section bim-button[data-section-tool="true"] {
   display: none;
   transition: opacity 0.2s ease;
 }
 
-/* Show buttons in expanded sections */
-bim-toolbar-section[data-expanded="true"] bim-button {
+/* Show tool buttons in expanded sections */
+bim-toolbar-section[data-expanded="true"] bim-button[data-section-tool="true"] {
   display: flex;
   opacity: 1;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: scale(0.8);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1);
   }
-}
-
-/* Make section labels clickable */
-bim-toolbar-section::part(label) {
-  cursor: pointer;
-  user-select: none;
 }
 
 bim-toolbar[data-dockable="true"] {
