@@ -378,7 +378,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
         </bim-button>
         <bim-button icon="mdi:minus-circle" label="- Planes">
           <bim-context-menu>
-            <bim-button icon="mdi:eye-off" label="Hide Planes" @click=${onTogglePlanesVisibility}></bim-button>
+            <bim-button icon="mdi:eye-off" label="Toggle Planes" @click=${onTogglePlanesVisibility}></bim-button>
             <bim-button icon="mdi:delete-sweep" label="Clear Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
           </bim-context-menu>
         </bim-button>

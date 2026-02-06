@@ -430,7 +430,7 @@ bim-context-menu {
   position: relative;
   border: 1px solid var(--bim-ui_bg-contrast-40);
   border-radius: 0.25rem;
-  overflow: visible;
+  overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -440,11 +440,20 @@ bim-context-menu {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .viewport-container bim-toolbar {
   flex-shrink: 0;
   max-width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Allow context menus to overflow the toolbar */
+.viewport-container bim-toolbar bim-context-menu {
+  position: absolute;
+  z-index: 1001;
 }
 
 bim-grid[floating] > bim-toolbar {

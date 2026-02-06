@@ -19,7 +19,7 @@ This update further reduces toolbar size by organizing clipping plane buttons in
   - Y Plane (Y-axis perpendicular)  
   - Z Plane (Z-axis perpendicular)
 - **"- Planes"** button with dropdown menu containing:
-  - Hide Planes (toggles visibility of all planes)
+  - Toggle Planes (toggles visibility of all planes)
   - Clear Planes (deletes all planes)
   
 **Benefits**:
@@ -189,7 +189,7 @@ An interactive demo page (`toolbar-demo.html`) has been created to showcase all 
    - **Y Plane**: Creates Y-axis perpendicular plane  
    - **Z Plane**: Creates Z-axis perpendicular plane
 2. **Click "- Planes" button** to open dropdown menu:
-   - **Hide Planes**: Toggles visibility of all planes
+   - **Toggle Planes**: Toggles visibility of all planes
    - **Clear Planes**: Deletes all planes permanently
 
 ### Manipulating Clipping Planes
