@@ -2,13 +2,15 @@ import * as OBC from "@thatopen/components"
 
 // Track if interactions have been setup to prevent duplicate event listeners
 let isClipperInteractionSetup = false
+// Track which clipper instances have had their dispose method wrapped
+const wrappedClippers = new WeakSet<OBC.Clipper>()
 
 /**
  * Setup the clipper component with interactive controls
  * 
  * Features:
  * - Double-click on model to create a section plane
- * - Press Delete key to remove the selected plane
+ * - Press Delete key to remove the selected plane (global, doesn't require canvas focus)
  * - Automatic cleanup to prevent memory leaks
  * 
  * @param components - The OBC Components instance
@@ -18,7 +20,7 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
   const clipper = components.get(OBC.Clipper)
   
   try {
-    // Setup clipper with the world
+    // Setup clipper with the world (always set these, even on subsequent calls)
     clipper.world = world
     clipper.enabled = true
 
@@ -41,6 +43,7 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
     }
 
     // Keyboard event handler: Delete selected plane with Delete key
+    // Attached to window for better UX (works without canvas focus)
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Delete" || event.key === "Delete") {
         try {
@@ -64,12 +67,14 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
       
       // Store cleanup function for memory leak prevention
       // Only wrap dispose if not already wrapped
-      if (!clipper.dispose.toString().includes('removeEventListener')) {
+      if (!wrappedClippers.has(clipper)) {
+        wrappedClippers.add(clipper)
         const originalDispose = clipper.dispose.bind(clipper)
         clipper.dispose = () => {
           container.removeEventListener("dblclick", onDoubleClick)
           window.removeEventListener("keydown", onKeyDown)
           isClipperInteractionSetup = false
+          wrappedClippers.delete(clipper)
           originalDispose()
         }
       }
