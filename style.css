@@ -444,6 +444,19 @@ bim-context-menu {
   position: relative;
 }
 
+.viewport-container bim-viewport {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.viewport-container bim-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .viewport-container bim-toolbar {
   flex-shrink: 0;
   max-width: 100%;
