@@ -1,6 +1,7 @@
 import * as OBC from "@thatopen/components"
 
 // Track if interactions have been setup to prevent duplicate event listeners
+// Note: Designed for single world setup as used in this application
 let isClipperInteractionSetup = false
 // Track which clipper instances have had their dispose method wrapped
 const wrappedClippers = new WeakSet<OBC.Clipper>()
@@ -9,9 +10,11 @@ const wrappedClippers = new WeakSet<OBC.Clipper>()
  * Setup the clipper component with interactive controls
  * 
  * Features:
- * - Double-click on model to create a section plane
- * - Press Delete key to remove the selected plane (global, doesn't require canvas focus)
+ * - Double-click on model to create a section plane at the click location
+ * - Press Delete key to remove the last created plane
  * - Automatic cleanup to prevent memory leaks
+ * 
+ * Note: Event handlers are global and shared across all worlds (single world expected)
  * 
  * @param components - The OBC Components instance
  * @param world - The world where the clipper will operate
@@ -42,12 +45,13 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
       }
     }
 
-    // Keyboard event handler: Delete selected plane with Delete key
+    // Keyboard event handler: Delete last created plane with Delete key
+    // Note: Deletes from the end of the list (most recently created)
     // Attached to window for better UX (works without canvas focus)
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Delete" || event.key === "Delete") {
         try {
-          // Get all planes and delete the most recently created one
+          // Get all planes and delete the last one (most recently created)
           const planes = Array.from(clipper.list.values())
           if (planes.length > 0) {
             const lastPlane = planes[planes.length - 1]
@@ -71,8 +75,10 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
         wrappedClippers.add(clipper)
         const originalDispose = clipper.dispose.bind(clipper)
         clipper.dispose = () => {
+          // Clean up event listeners
           container.removeEventListener("dblclick", onDoubleClick)
           window.removeEventListener("keydown", onKeyDown)
+          // Reset flags for potential re-initialization
           isClipperInteractionSetup = false
           wrappedClippers.delete(clipper)
           originalDispose()
