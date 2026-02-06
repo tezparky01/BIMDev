@@ -162,11 +162,79 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     target.loading = false;
   };
 
+  // Clipping functions
+  const onCreateClippingPlane = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      clipper.create(world);
+    } catch (error) {
+      console.error("Error creating clipping plane:", error);
+    }
+  };
+
+  const onDeleteAllClippingPlanes = () => {
+    try {
+      const clipper = components.get(OBC.Clipper);
+      clipper.deleteAll();
+    } catch (error) {
+      console.error("Error deleting clipping planes:", error);
+    }
+  };
+
+  // Measurement functions
+  const onToggleLengthMeasurement = () => {
+    try {
+      const lengthMeasurement = components.get(OBF.LengthMeasurement);
+      const areaMeasurement = components.get(OBF.AreaMeasurement);
+      
+      // Toggle length measurement
+      lengthMeasurement.enabled = !lengthMeasurement.enabled;
+      
+      // Disable area measurement if length is enabled
+      if (lengthMeasurement.enabled) {
+        areaMeasurement.enabled = false;
+      }
+    } catch (error) {
+      console.error("Error toggling length measurement:", error);
+    }
+  };
+
+  const onToggleAreaMeasurement = () => {
+    try {
+      const lengthMeasurement = components.get(OBF.LengthMeasurement);
+      const areaMeasurement = components.get(OBF.AreaMeasurement);
+      
+      // Toggle area measurement
+      areaMeasurement.enabled = !areaMeasurement.enabled;
+      
+      // Disable length measurement if area is enabled
+      if (areaMeasurement.enabled) {
+        lengthMeasurement.enabled = false;
+      }
+    } catch (error) {
+      console.error("Error toggling area measurement:", error);
+    }
+  };
+
+  const onDeleteAllMeasurements = () => {
+    try {
+      const lengthMeasurement = components.get(OBF.LengthMeasurement);
+      const areaMeasurement = components.get(OBF.AreaMeasurement);
+      
+      lengthMeasurement.delete();
+      areaMeasurement.delete();
+    } catch (error) {
+      console.error("Error deleting measurements:", error);
+    }
+  };
+
   return BUI.html`
     <bim-toolbar>
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
         <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
         <bim-button icon=${appIcons.TRANSPARENT} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
+        <bim-button icon="mdi:content-cut" label="Create Section Plane" @click=${onCreateClippingPlane}></bim-button>
+        <bim-button icon="mdi:delete-sweep" label="Delete All Planes" @click=${onDeleteAllClippingPlanes}></bim-button>
       </bim-toolbar-section>
       <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
         <bim-button icon=${appIcons.FOCUS} label="Focus" @click=${onFocus}></bim-button>
@@ -183,6 +251,11 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
             </div>
           </bim-context-menu>
         </bim-button>
+      </bim-toolbar-section>
+      <bim-toolbar-section label="Measure" icon="mdi:ruler">
+        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement}></bim-button>
+        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement}></bim-button>
+        <bim-button icon="mdi:delete" label="Delete All Measurements" @click=${onDeleteAllMeasurements}></bim-button>
       </bim-toolbar-section>
     </bim-toolbar>
   `;
