@@ -42,7 +42,7 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
       Models: {
         template: `
           "models viewport itemsData" 1fr
-          "datasources viewport datasources" 1fr
+          "models viewport datasources" 1fr
           /14.67rem 1fr 14.67rem
         `,
       },

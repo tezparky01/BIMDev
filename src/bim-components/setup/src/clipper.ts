@@ -3,7 +3,7 @@ import * as OBC from "@thatopen/components"
 export const setupClipper = (components: OBC.Components, world: OBC.World) => {
   const clipper = components.get(OBC.Clipper)
   
-  // Clipper is now ready to use
+  // Initialize clipper - the world parameter is passed to create() method when creating planes
   try {
     clipper.enabled = true
   } catch (error) {
