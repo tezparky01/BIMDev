@@ -9,6 +9,9 @@
   --background: #202124;
   --background-100: #26282b;
   --background-200: #3b3c3f;
+  
+  /* Toolbar responsive breakpoint */
+  --toolbar-breakpoint: 1200px;
 
   --bim-ui_main-base: var(--primary);
   --bim-ui_accent-base: var(--primary);
@@ -471,6 +474,7 @@ bim-toolbar[data-floating="true"] {
 }
 
 /* Make toolbar sections wrap on smaller screens */
+/* Breakpoint: 1200px (corresponds to --toolbar-breakpoint in :root) */
 @media (max-width: 1200px) {
   bim-toolbar {
     flex-wrap: wrap;
