@@ -430,6 +430,7 @@ bim-context-menu {
   position: relative;
   border: 1px solid var(--bim-ui_bg-contrast-40);
   border-radius: 0.25rem;
+  /* Changed from 'auto' to 'hidden' - context menus now use absolute positioning to overflow */
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -450,9 +451,10 @@ bim-context-menu {
   z-index: 10;
 }
 
-/* Allow context menus to overflow the toolbar */
+/* Allow context menus to overflow the toolbar - positioned above other toolbar elements */
 .viewport-container bim-toolbar bim-context-menu {
   position: absolute;
+  /* Higher than toolbar z-index (10) to ensure menus appear on top */
   z-index: 1001;
 }
 

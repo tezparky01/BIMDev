@@ -74,6 +74,7 @@ This update further reduces toolbar size by organizing clipping plane buttons in
 - Toolbar now fits better in viewport container
 - Added max-width/max-height constraints for floating mode
 - Improved context menu styling for sub-buttons
+- Fixed overflow handling to use 'hidden' with absolute positioning for context menus
 
 **v1 Solution**:
 - Horizontal scrolling when content overflows
@@ -114,8 +115,8 @@ This update further reduces toolbar size by organizing clipping plane buttons in
 2. **style.css**
    - Added max-width/max-height constraints for floating toolbar
    - Added context menu styling for organized sub-buttons
-   - Improved viewport container to handle toolbar overflow
-   - Changed overflow from 'auto' to 'visible' for proper menu display
+   - Improved viewport container to handle toolbar with proper overflow (hidden + absolute positioning)
+   - Added z-index layering for context menus to appear above toolbar elements
 
 ### Files Modified (v1)
 1. **src/ui-templates/containers/viewport-toolbar.ts**
