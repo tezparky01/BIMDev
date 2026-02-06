@@ -1,7 +1,7 @@
 import * as BUI from "@thatopen/ui";
 import { ComponentsGrid } from "./src";
 import { viewportContainerTemplate } from "../../containers";
-import { dataSourcesPanelTemplate, itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate, qualityPanelTemplate, clipperPanelTemplate } from "../../sections";
+import { dataSourcesPanelTemplate, itemsDataPanelTemplate, modelsPanelTemplate, qualityPanelTemplate } from "../../sections";
 import * as OBC from "@thatopen/components"
 
 interface ComponentsGridState {
@@ -28,10 +28,6 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
         template: modelsPanelTemplate,
         initialState: { components }
       },
-      queries: {
-        template: queriesPanelTemplate,
-        initialState: { components }
-      },
       datasources: {
         template: dataSourcesPanelTemplate,
         initialState: { components }
@@ -40,24 +36,14 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
         template: qualityPanelTemplate,
         initialState: { components }
       },
-      clipper: {
-        template: clipperPanelTemplate,
-        initialState: { components }
-      },
     };
 
     grid.layouts = {
       Models: {
         template: `
           "models viewport itemsData" 1fr
-          "queries viewport datasources" 1fr
+          "models viewport datasources" 1fr
           /14.67rem 1fr 14.67rem
-        `,
-      },
-      Queries: {
-        template: `
-          "viewport queries" 1fr
-          /1fr 14.67rem
         `,
       },
       Viewer: {
@@ -70,12 +56,6 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
         template: `
           "viewport quality" 1fr
           /1fr 20rem
-        `,
-      },
-      Clipper: {
-        template: `
-          "viewport clipper" 1fr
-          /1fr 16rem
         `,
       },
     };
