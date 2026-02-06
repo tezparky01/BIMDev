@@ -219,7 +219,12 @@ export function ProjectsPage(props: Props) {
                 columnGap: 10
               }}
             >
-              <button type="button" style={{ backgroundColor: "transparent" }}>
+              <button type="button" onClick={() => {
+                const modal = document.getElementById("new-project-modal");
+                if (modal && modal instanceof HTMLDialogElement) {
+                  modal.close();
+                }
+              }} style={{ backgroundColor: "transparent" }}>
                 Cancel
               </button>
               <button type="submit" style={{ backgroundColor: "rgb(18, 145, 18)" }}>
