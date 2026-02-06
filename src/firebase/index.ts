@@ -11,7 +11,8 @@ const firebaseConfig = {
 };
 
 // Add validation to ensure all required env vars are present
-if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId || 
+    !firebaseConfig.storageBucket || !firebaseConfig.messagingSenderId || !firebaseConfig.appId) {
   throw new Error(
     'Missing required Firebase environment variables. Please check your .env file.'
   );
