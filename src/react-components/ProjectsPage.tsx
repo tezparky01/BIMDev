@@ -144,19 +144,21 @@ export function ProjectsPage(props: Props) {
   }
 
   return (
-    <div className="page" id="projects-page" style={{ display: "flex" }}>
+    <div className="page" id="projects-page">
       <dialog id="new-project-modal">
         <form onSubmit={(e) => onFormSubmit(e)} id="new-project-form">
           <h2>New Project</h2>
           <div className="input-list">
             <div className="form-field-container">
-              <label>
+              <label htmlFor="new-project-name">
                 <span className="material-icons-round">apartment</span>Name
               </label>
               <input
+                id="new-project-name"
                 name="name"
                 type="text"
                 placeholder="What's the name of your project?"
+                autoComplete="off"
               />
               <p
                 style={{
@@ -170,10 +172,11 @@ export function ProjectsPage(props: Props) {
               </p>
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="new-project-description">
                 <span className="material-icons-round">subject</span>Description
               </label>
               <textarea
+                id="new-project-description"
                 name="description"
                 cols={30}
                 rows={5}
@@ -182,32 +185,32 @@ export function ProjectsPage(props: Props) {
               />
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="new-project-role">
                 <span className="material-icons-round">person</span>Role
               </label>
-              <select name="userRole">
+              <select id="new-project-role" name="userRole">
                 <option>Architect</option>
                 <option>Engineer</option>
                 <option>Developer</option>
               </select>
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="new-project-status">
                 <span className="material-icons-round">not_listed_location</span>
                 Status
               </label>
-              <select name="status">
+              <select id="new-project-status" name="status">
                 <option>Pending</option>
                 <option>Active</option>
                 <option>Finished</option>
               </select>
             </div>
             <div className="form-field-container">
-              <label htmlFor="finishDate">
+              <label htmlFor="new-project-finishDate">
                 <span className="material-icons-round">calendar_month</span>
                 Finish Date
               </label>
-              <input name="finishDate" type="date" />
+              <input id="new-project-finishDate" name="finishDate" type="date" />
             </div>
             <div
               style={{
@@ -231,22 +234,25 @@ export function ProjectsPage(props: Props) {
           <h2>Edit Project</h2>
           <div className="input-list">
             <div className="form-field-container">
-              <label>
+              <label htmlFor="edit-project-name">
                 <span className="material-icons-round">apartment</span>Name
               </label>
               <input
+                id="edit-project-name"
                 name="name"
                 type="text"
                 defaultValue={editingProject?.name || ""}
                 key={editingProject?.id}
                 placeholder="What's the name of your project?"
+                autoComplete="off"
               />
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="edit-project-description">
                 <span className="material-icons-round">subject</span>Description
               </label>
               <textarea
+                id="edit-project-description"
                 name="description"
                 cols={30}
                 rows={5}
@@ -256,32 +262,33 @@ export function ProjectsPage(props: Props) {
               />
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="edit-project-role">
                 <span className="material-icons-round">person</span>Role
               </label>
-              <select name="userRole" defaultValue={editingProject?.userRole || "Architect"} key={editingProject?.id + "-role"}>
+              <select id="edit-project-role" name="userRole" defaultValue={editingProject?.userRole || "Architect"} key={editingProject?.id + "-role"}>
                 <option>Architect</option>
                 <option>Engineer</option>
                 <option>Developer</option>
               </select>
             </div>
             <div className="form-field-container">
-              <label>
+              <label htmlFor="edit-project-status">
                 <span className="material-icons-round">not_listed_location</span>
                 Status
               </label>
-              <select name="status" defaultValue={editingProject?.status || "Pending"} key={editingProject?.id + "-status"}>
+              <select id="edit-project-status" name="status" defaultValue={editingProject?.status || "Pending"} key={editingProject?.id + "-status"}>
                 <option>Pending</option>
                 <option>Active</option>
                 <option>Finished</option>
               </select>
             </div>
             <div className="form-field-container">
-              <label htmlFor="finishDate">
+              <label htmlFor="edit-project-finishDate">
                 <span className="material-icons-round">calendar_month</span>
                 Finish Date
               </label>
               <input 
+                id="edit-project-finishDate"
                 name="finishDate" 
                 type="date" 
                 defaultValue={editingProject?.finishDate ? editingProject.finishDate.toISOString().split('T')[0] : ""}
@@ -326,9 +333,11 @@ export function ProjectsPage(props: Props) {
           <bim-button onclick={onNewProjectClick} icon={appIcons.ADD} label="New Project"></bim-button>
         </div>
       </header>
-      {
-        projects.length > 0 ? <div id="projects-list">{ projectCards }</div> : <p>There is no projects to display!</p>
-      }
+      <div style={{ flex: 1, overflow: "auto" }}>
+        {
+          projects.length > 0 ? <div id="projects-list">{ projectCards }</div> : <p style={{ padding: "20px 40px" }}>There are no projects to display!</p>
+        }
+      </div>
     </div>
   )
 }
