@@ -17,7 +17,7 @@ export const modelsPanelTemplate: BUI.StatefullComponent<
   });
 
   const [loadModelsBtn] = BUI.Component.create(loadModelBtnTemplate, { components })
-  loadModelsBtn.style.flex = "0"
+  loadModelsBtn.style.flex = "0 0 auto"
 
   const onSearch = (e: Event) => {
     const input = e.target as BUI.TextInput;
