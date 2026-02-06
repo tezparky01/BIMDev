@@ -18,6 +18,18 @@ export const clippingPanelTemplate: BUI.StatefullComponent<
   
   // Get the clipper component
   const clipper = components.get(OBC.Clipper);
+  
+  // Track plane count reactively
+  let planeCountElement: BUI.Label | null = null;
+
+  /**
+   * Updates the displayed plane count
+   */
+  const updatePlaneCount = () => {
+    if (planeCountElement) {
+      planeCountElement.textContent = `Active Planes: ${clipper.list.size}`;
+    }
+  };
 
   /**
    * Creates a new clipping plane at the center of the current view
@@ -27,8 +39,7 @@ export const clippingPanelTemplate: BUI.StatefullComponent<
       const plane = await clipper.create(world);
       if (plane) {
         console.log("Clipping plane created:", plane.id);
-        // Trigger UI update by dispatching a custom event
-        document.dispatchEvent(new CustomEvent("clipping-plane-created"));
+        updatePlaneCount();
       }
     } catch (error) {
       console.error("Error creating clipping plane:", error);
@@ -42,8 +53,7 @@ export const clippingPanelTemplate: BUI.StatefullComponent<
     try {
       clipper.deleteAll();
       console.log("All clipping planes deleted");
-      // Trigger UI update
-      document.dispatchEvent(new CustomEvent("clipping-planes-deleted"));
+      updatePlaneCount();
     } catch (error) {
       console.error("Error deleting clipping planes:", error);
     }
@@ -57,8 +67,9 @@ export const clippingPanelTemplate: BUI.StatefullComponent<
     clipper.enabled = checkbox.checked;
   };
 
-  // Get the current number of planes
-  const planeCount = clipper.list.size;
+  // Listen to clipper events to update UI
+  clipper.onAfterCreate.add(() => updatePlaneCount());
+  clipper.onAfterDelete.add(() => updatePlaneCount());
 
   return BUI.html`
     <bim-panel-section fixed label="Clipping Planes" icon="material-symbols:cut">
@@ -92,7 +103,12 @@ export const clippingPanelTemplate: BUI.StatefullComponent<
 
         <!-- Plane Count Info -->
         <div style="padding: 0.5rem; background-color: var(--bim-ui_bg-contrast-20); border-radius: 0.25rem;">
-          <bim-label>Active Planes: ${planeCount}</bim-label>
+          <bim-label ${BUI.ref((el?: Element) => {
+            if (el instanceof BUI.Label) {
+              planeCountElement = el;
+              updatePlaneCount();
+            }
+          })}>Active Planes: ${clipper.list.size}</bim-label>
         </div>
 
         <!-- Instructions -->

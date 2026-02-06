@@ -16,12 +16,8 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
   // Enable the clipper component
   clipper.enabled = true
   
-  // Setup with default configuration
-  // The clipper will use the world to create and manage clipping planes
-  clipper.setup()
-  
-  // Optional: Configure default settings for new clipping planes
-  // These can be customized based on project requirements
+  // Setup is optional - clipper works with default configuration
+  // Custom configuration can be passed if needed: clipper.setup({ config })
   
   return clipper
 }
