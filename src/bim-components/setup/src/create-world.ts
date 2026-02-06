@@ -38,7 +38,8 @@ export const createWorld = (components: OBC.Components) => {
   
   viewport.addEventListener("resize", resizeWorld);
 
-  components.get(OBC.Raycasters).get(world);
+  const raycasters = components.get(OBC.Raycasters);
+  raycasters.get(world);
 
   components.get(OBC.Grids).create(world);
 

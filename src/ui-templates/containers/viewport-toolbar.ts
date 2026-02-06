@@ -162,6 +162,28 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     target.loading = false;
   };
 
+  const onCreateClippingPlane = ({ target }: { target: BUI.Button }) => {
+    const clipper = components.get(OBC.Clipper);
+    clipper.create(world);
+  };
+
+  const onDeleteClippingPlane = ({ target }: { target: BUI.Button }) => {
+    const clipper = components.get(OBC.Clipper);
+    clipper.delete(world);
+  };
+
+  const onDeleteAllClippingPlanes = ({ target }: { target: BUI.Button }) => {
+    const clipper = components.get(OBC.Clipper);
+    clipper.deleteAll();
+  };
+
+  const onToggleClippingPlanes = ({ target }: { target: BUI.Button }) => {
+    const clipper = components.get(OBC.Clipper);
+    for (const [, clipping] of clipper.list) {
+      clipping.enabled = !clipping.enabled;
+    }
+  };
+
   return BUI.html`
     <bim-toolbar>
       <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
@@ -183,6 +205,12 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
             </div>
           </bim-context-menu>
         </bim-button>
+      </bim-toolbar-section>
+      <bim-toolbar-section label="Sectioning" icon="mdi:content-cut">
+        <bim-button icon="mdi:plus-box" label="Create Plane" @click=${onCreateClippingPlane}></bim-button>
+        <bim-button icon="mdi:delete" label="Delete Plane" @click=${onDeleteClippingPlane}></bim-button>
+        <bim-button icon="mdi:eye-off" label="Toggle Planes" @click=${onToggleClippingPlanes}></bim-button>
+        <bim-button icon="mdi:delete-sweep" label="Delete All" @click=${onDeleteAllClippingPlanes}></bim-button>
       </bim-toolbar-section>
     </bim-toolbar>
   `;

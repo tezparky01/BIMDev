@@ -32,7 +32,7 @@ export function ProjectDetailsPage(props: Props) {
     const { current: grid } = viewerGrid
     if (!grid) return
 
-    const { components, viewport } = await setupComponents()
+    const { components, viewport, world } = await setupComponents()
     engineManager = components
 
     grid.elements = {
