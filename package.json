@@ -1,18 +1,35 @@
 {
-  "name": "that-open-master",
+  "name": "bimdev-master",
   "version": "1.0.0",
-  "description": "",
+  "description": "BIM Development Platform with IFC viewer, quality inspection, and Firebase integration",
   "main": "index.js",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "BIM",
+    "IFC",
+    "construction",
+    "quality-inspection",
+    "3d-viewer",
+    "react",
+    "firebase"
+  ],
+  "author": "Terry",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tezparky01/BIMDev.git"
+  },
   "devDependencies": {
-    "@types/react": "18.2.31",
-    "@types/react-dom": "18.2.14",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/three": "0.175.0",
+    "@types/uuid": "^9.0.7",
     "@vitejs/plugin-react": "^4.7.0",
     "typescript": "^5.2.2",
     "vite": "^7.3.1"
