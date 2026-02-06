@@ -22,10 +22,11 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
     clipper.world = world
     clipper.enabled = true
 
-    // Only setup interactions once
+    // Only setup interactions once to prevent duplicate event listeners
     if (isClipperInteractionSetup) {
       return
     }
+    // Set flag immediately to prevent race conditions
     isClipperInteractionSetup = true
 
     // Double-click event handler: Create a new clipping plane
@@ -62,12 +63,15 @@ export const setupClipper = (components: OBC.Components, world: OBC.World) => {
       window.addEventListener("keydown", onKeyDown)
       
       // Store cleanup function for memory leak prevention
-      const originalDispose = clipper.dispose.bind(clipper)
-      clipper.dispose = () => {
-        container.removeEventListener("dblclick", onDoubleClick)
-        window.removeEventListener("keydown", onKeyDown)
-        isClipperInteractionSetup = false
-        originalDispose()
+      // Only wrap dispose if not already wrapped
+      if (!clipper.dispose.toString().includes('removeEventListener')) {
+        const originalDispose = clipper.dispose.bind(clipper)
+        clipper.dispose = () => {
+          container.removeEventListener("dblclick", onDoubleClick)
+          window.removeEventListener("keydown", onKeyDown)
+          isClipperInteractionSetup = false
+          originalDispose()
+        }
       }
     }
   } catch (error) {
