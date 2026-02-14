@@ -11,6 +11,8 @@ const originalMaterialsData = new Map<
 >();
 
 const BUTTON_SELECTOR = 'bim-button';
+const TOOL_LENGTH = 'length';
+const TOOL_AREA = 'area';
 
 export interface ViewerToolbarState {
   components: OBC.Components;
@@ -360,7 +362,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
         button.setAttribute('data-active', 'true');
         areaMeasurement.enabled = false;
         // Clear area button state
-        const areaButton = button.parentElement?.querySelector('[data-tool="area"]') as BUI.Button;
+        const areaButton = button.parentElement?.querySelector(`[data-tool="${TOOL_AREA}"]`) as BUI.Button;
         if (areaButton) areaButton.removeAttribute('data-active');
         console.log("✓ Length measurement enabled - Click points to measure distance");
       } else {
@@ -392,7 +394,7 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
         button.setAttribute('data-active', 'true');
         lengthMeasurement.enabled = false;
         // Clear length button state
-        const lengthButton = button.parentElement?.querySelector('[data-tool="length"]') as BUI.Button;
+        const lengthButton = button.parentElement?.querySelector(`[data-tool="${TOOL_LENGTH}"]`) as BUI.Button;
         if (lengthButton) lengthButton.removeAttribute('data-active');
         console.log("✓ Area measurement enabled - Click points to define area boundary");
       } else {
@@ -416,8 +418,8 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       // Clear button states
       const toolbar = document.querySelector('bim-toolbar');
       if (toolbar) {
-        const lengthButton = toolbar.querySelector('[data-tool="length"]') as BUI.Button;
-        const areaButton = toolbar.querySelector('[data-tool="area"]') as BUI.Button;
+        const lengthButton = toolbar.querySelector(`[data-tool="${TOOL_LENGTH}"]`) as BUI.Button;
+        const areaButton = toolbar.querySelector(`[data-tool="${TOOL_AREA}"]`) as BUI.Button;
         if (lengthButton) lengthButton.removeAttribute('data-active');
         if (areaButton) areaButton.removeAttribute('data-active');
       }
@@ -460,8 +462,8 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       </bim-toolbar-section>
       <bim-toolbar-section label="Measurement" icon="mdi:ruler" data-section-name="measures">
         <bim-button icon="mdi:chevron-down" @click=${toggleSection('measures')} data-toggle-btn="true" label=""></bim-button>
-        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true" data-tool="length"></bim-button>
-        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true" data-tool="area"></bim-button>
+        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true" data-tool="${TOOL_LENGTH}"></bim-button>
+        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true" data-tool="${TOOL_AREA}"></bim-button>
         <bim-button icon="mdi:delete" label="Delete All Measurements" @click=${onDeleteAllMeasurements} data-section-tool="true"></bim-button>
       </bim-toolbar-section>
     </bim-toolbar>

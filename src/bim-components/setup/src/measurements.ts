@@ -8,7 +8,7 @@ export const setupMeasurements = (components: OBC.Components, world: OBC.World) 
   
   // Setup measurements with the world
   try {
-    // Critical: Set the world property for both tools before enabling them
+    // Critical: Set the world property for both tools (required before they can be used)
     lengthMeasurement.world = world
     areaMeasurement.world = world
     

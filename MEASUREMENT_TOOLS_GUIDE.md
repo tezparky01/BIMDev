@@ -8,9 +8,9 @@ This guide explains how to use the Length and Area measurement tools in the BIM 
 ### What Was Fixed
 
 1. **Improved Initialization**
-   - Added explicit `snapDistance` configuration (0.5 world units)
    - Enhanced error logging with success confirmation
    - Better world property validation
+   - Clearer comments about world property requirement
 
 2. **Visual Feedback**
    - Active measurement buttons now show green highlight
@@ -22,10 +22,15 @@ This guide explains how to use the Length and Area measurement tools in the BIM 
    - Guidance messages when measurements are toggled
    - Error messages with context when issues occur
 
+4. **Code Quality**
+   - Added constants for tool names to prevent mismatches
+   - Removed redundant code
+   - Improved maintainability
+
 ### Files Modified
 
 - `src/bim-components/setup/src/measurements.ts` - Enhanced initialization
-- `src/ui-templates/containers/viewport-toolbar.ts` - Added visual feedback and validation
+- `src/ui-templates/containers/viewport-toolbar.ts` - Added visual feedback, validation, and constants
 - `style.css` - Added active button styling
 
 ## How to Use Measurement Tools
@@ -46,8 +51,8 @@ This guide explains how to use the Length and Area measurement tools in the BIM 
 7. Click the button again to disable the tool
 
 **Measurement Modes**:
-- The tool uses the configured snap distance (0.5 world units by default)
-- Points can be placed anywhere in 3D space
+- The tool allows clicking points anywhere in 3D space
+- Points can be placed freely on model surfaces or in empty space
 - Multiple measurements can be created
 
 ### Area Measurement
@@ -65,8 +70,8 @@ This guide explains how to use the Length and Area measurement tools in the BIM 
 6. Click the button again to complete and disable the tool
 
 **Polygon Types**:
-- **Free-form**: Create irregular polygons (default)
-- Points snap within the configured snap distance
+- **Free-form**: Create irregular polygons by clicking points
+- Points are placed where you click in the 3D scene
 
 ### Delete All Measurements
 
@@ -109,7 +114,6 @@ components.init(); // Initialize the component system
 ```typescript
 // In src/bim-components/setup/src/measurements.ts
 lengthMeasurement.world = world;           // Required: Associate with 3D world
-lengthMeasurement.snapDistance = 0.5;      // Optional: Snap tolerance
 lengthMeasurement.enabled = false;         // Start disabled
 ```
 
@@ -148,13 +152,12 @@ lengthMeasurement.enabled = false;         // Start disabled
 - Implement custom persistence logic
 - Use the project/quality system to save annotations
 
-### Q: Snap distance too large/small
-**A:** The snap distance is configured in `measurements.ts`:
-```typescript
-lengthMeasurement.snapDistance = 0.5; // Adjust this value
-```
-- Smaller values (e.g., 0.1) = more precise, harder to snap
-- Larger values (e.g., 1.0) = easier to snap, less precise
+### Q: Measurements seem imprecise
+**A:** 
+- Try zooming the camera closer to the target area
+- Ensure you're clicking directly on the geometry
+- Use the model's grid or reference elements for alignment
+- Consider the precision limits of the measurement system
 
 ## API Reference
 
@@ -165,7 +168,6 @@ lengthMeasurement.snapDistance = 0.5; // Adjust this value
 **Key Properties**:
 - `world: OBC.World` - The 3D world to measure in (required)
 - `enabled: boolean` - Whether the tool is active
-- `snapDistance: number` - Distance for point snapping (world units)
 
 **Methods**:
 - `delete()` - Remove all length measurements
@@ -177,7 +179,6 @@ lengthMeasurement.snapDistance = 0.5; // Adjust this value
 **Key Properties**:
 - `world: OBC.World` - The 3D world to measure in (required)
 - `enabled: boolean` - Whether the tool is active
-- `snapDistance: number` - Distance for point snapping (world units)
 
 **Methods**:
 - `delete()` - Remove all area measurements
