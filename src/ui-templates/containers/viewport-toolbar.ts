@@ -355,20 +355,17 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       // Toggle length measurement
       lengthMeasurement.enabled = !lengthMeasurement.enabled;
       
-      // Update button state
+      // Update button state and disable other tool if this one is being enabled
       if (lengthMeasurement.enabled) {
         button.setAttribute('data-active', 'true');
         areaMeasurement.enabled = false;
+        // Clear area button state
+        const areaButton = button.parentElement?.querySelector('[data-tool="area"]') as BUI.Button;
+        if (areaButton) areaButton.removeAttribute('data-active');
         console.log("✓ Length measurement enabled - Click points to measure distance");
       } else {
         button.removeAttribute('data-active');
         console.log("✓ Length measurement disabled");
-      }
-      
-      // Disable area measurement if length is enabled
-      if (lengthMeasurement.enabled) {
-        const areaButton = button.parentElement?.querySelector('[data-tool="area"]') as BUI.Button;
-        if (areaButton) areaButton.removeAttribute('data-active');
       }
     } catch (error) {
       console.error("Error toggling length measurement:", error);
@@ -390,20 +387,17 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       // Toggle area measurement
       areaMeasurement.enabled = !areaMeasurement.enabled;
       
-      // Update button state
+      // Update button state and disable other tool if this one is being enabled
       if (areaMeasurement.enabled) {
         button.setAttribute('data-active', 'true');
         lengthMeasurement.enabled = false;
+        // Clear length button state
+        const lengthButton = button.parentElement?.querySelector('[data-tool="length"]') as BUI.Button;
+        if (lengthButton) lengthButton.removeAttribute('data-active');
         console.log("✓ Area measurement enabled - Click points to define area boundary");
       } else {
         button.removeAttribute('data-active');
         console.log("✓ Area measurement disabled");
-      }
-      
-      // Disable length measurement if area is enabled
-      if (areaMeasurement.enabled) {
-        const lengthButton = button.parentElement?.querySelector('[data-tool="length"]') as BUI.Button;
-        if (lengthButton) lengthButton.removeAttribute('data-active');
       }
     } catch (error) {
       console.error("Error toggling area measurement:", error);
