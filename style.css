@@ -645,3 +645,14 @@ bim-toolbar bim-context-menu bim-button {
 bim-grid.components-grid > * {
   position: relative;
 }
+
+/* Active measurement button styling */
+bim-button[data-active="true"] {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+bim-button[data-active="true"]:hover {
+  background-color: #45a049 !important;
+}

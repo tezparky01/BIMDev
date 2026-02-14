@@ -11,6 +11,8 @@ const originalMaterialsData = new Map<
 >();
 
 const BUTTON_SELECTOR = 'bim-button';
+const TOOL_LENGTH = 'length';
+const TOOL_AREA = 'area';
 
 export interface ViewerToolbarState {
   components: OBC.Components;
@@ -33,9 +35,6 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
   // Store event listeners for cleanup
   let mouseMoveHandler: ((event: MouseEvent) => void) | null = null;
   let mouseUpHandler: (() => void) | null = null;
-  
-  // Track expanded section
-  let expandedSection: string | null = null;
 
   const onInputCreated = (e?: Element) => {
     if (!e) return;
@@ -56,14 +55,12 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
     if (isExpanded) {
       // Collapse current section
       section.removeAttribute('data-expanded');
-      expandedSection = null;
     } else {
       // Collapse all other sections
       allSections.forEach(s => s.removeAttribute('data-expanded'));
       
       // Expand clicked section
       section.setAttribute('data-expanded', 'true');
-      expandedSection = sectionName;
     }
   };
 
@@ -345,34 +342,64 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
   };
 
   // Measurement functions
-  const onToggleLengthMeasurement = () => {
+  const onToggleLengthMeasurement = (e: Event) => {
     try {
+      const button = e.currentTarget as BUI.Button;
       const lengthMeasurement = components.get(OBF.LengthMeasurement);
       const areaMeasurement = components.get(OBF.AreaMeasurement);
+      
+      // Verify world is set
+      if (!lengthMeasurement.world) {
+        console.error("Length measurement world is not set!");
+        return;
+      }
       
       // Toggle length measurement
       lengthMeasurement.enabled = !lengthMeasurement.enabled;
       
-      // Disable area measurement if length is enabled
+      // Update button state and disable other tool if this one is being enabled
       if (lengthMeasurement.enabled) {
+        button.setAttribute('data-active', 'true');
         areaMeasurement.enabled = false;
+        // Clear area button state
+        const areaButton = button.parentElement?.querySelector(`[data-tool="${TOOL_AREA}"]`) as BUI.Button;
+        if (areaButton) areaButton.removeAttribute('data-active');
+        console.log("✓ Length measurement enabled - Click points to measure distance");
+      } else {
+        button.removeAttribute('data-active');
+        console.log("✓ Length measurement disabled");
       }
     } catch (error) {
       console.error("Error toggling length measurement:", error);
     }
   };
 
-  const onToggleAreaMeasurement = () => {
+  const onToggleAreaMeasurement = (e: Event) => {
     try {
+      const button = e.currentTarget as BUI.Button;
       const lengthMeasurement = components.get(OBF.LengthMeasurement);
       const areaMeasurement = components.get(OBF.AreaMeasurement);
+      
+      // Verify world is set
+      if (!areaMeasurement.world) {
+        console.error("Area measurement world is not set!");
+        return;
+      }
       
       // Toggle area measurement
       areaMeasurement.enabled = !areaMeasurement.enabled;
       
-      // Disable length measurement if area is enabled
+      // Update button state and disable other tool if this one is being enabled
       if (areaMeasurement.enabled) {
+        button.setAttribute('data-active', 'true');
         lengthMeasurement.enabled = false;
+        // Clear length button state
+        const lengthButton = button.parentElement?.querySelector(`[data-tool="${TOOL_LENGTH}"]`) as BUI.Button;
+        if (lengthButton) lengthButton.removeAttribute('data-active');
+        console.log("✓ Area measurement enabled - Click points to define area boundary");
+      } else {
+        button.removeAttribute('data-active');
+        console.log("✓ Area measurement disabled");
       }
     } catch (error) {
       console.error("Error toggling area measurement:", error);
@@ -384,8 +411,20 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       const lengthMeasurement = components.get(OBF.LengthMeasurement);
       const areaMeasurement = components.get(OBF.AreaMeasurement);
       
+      // Delete all measurements
       lengthMeasurement.delete();
       areaMeasurement.delete();
+      
+      // Clear button states
+      const toolbar = document.querySelector('bim-toolbar');
+      if (toolbar) {
+        const lengthButton = toolbar.querySelector(`[data-tool="${TOOL_LENGTH}"]`) as BUI.Button;
+        const areaButton = toolbar.querySelector(`[data-tool="${TOOL_AREA}"]`) as BUI.Button;
+        if (lengthButton) lengthButton.removeAttribute('data-active');
+        if (areaButton) areaButton.removeAttribute('data-active');
+      }
+      
+      console.log("✓ All measurements deleted");
     } catch (error) {
       console.error("Error deleting measurements:", error);
     }
@@ -423,8 +462,8 @@ export const viewerToolbarTemplate: BUI.StatefullComponent<
       </bim-toolbar-section>
       <bim-toolbar-section label="Measurement" icon="mdi:ruler" data-section-name="measures">
         <bim-button icon="mdi:chevron-down" @click=${toggleSection('measures')} data-toggle-btn="true" label=""></bim-button>
-        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true"></bim-button>
-        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true"></bim-button>
+        <bim-button icon="mdi:ruler" label="Length Measurement" @click=${onToggleLengthMeasurement} data-section-tool="true" data-tool="${TOOL_LENGTH}"></bim-button>
+        <bim-button icon="mdi:vector-square" label="Area Measurement" @click=${onToggleAreaMeasurement} data-section-tool="true" data-tool="${TOOL_AREA}"></bim-button>
         <bim-button icon="mdi:delete" label="Delete All Measurements" @click=${onDeleteAllMeasurements} data-section-tool="true"></bim-button>
       </bim-toolbar-section>
     </bim-toolbar>
